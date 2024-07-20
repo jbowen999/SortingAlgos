@@ -100,8 +100,51 @@ namespace SortingAlgos
             {
                 rightSubArray[i - mid] = arr[i];
             }
+            Console.WriteLine("Before sorting left subarray:");
+            PrintArray(leftSubArray);
+            Console.WriteLine("Before sorting right subarray:");
+            PrintArray(rightSubArray);
+
             MergeSort(leftSubArray);
             MergeSort(rightSubArray);
+
+            Merge(arr, leftSubArray, rightSubArray);
+            Console.WriteLine("After merging:");
+            PrintArray(arr);
+        }
+
+        public static void Merge(int[] arr, int[] left, int[] right)
+        {
+            int i = 0, j = 0, k = 0;
+
+            while (i < left.Length && j < right.Length)
+            {
+                if (left[i] <= right[j])
+                {
+                    arr[k] = left[i];
+                    i++;
+                }
+                else
+                {
+                    arr[k] = right[j];
+                    j++;
+                }
+                k++;
+            }
+
+            while (i < left.Length)
+            {
+                arr[k] = left[i];
+                i++;
+                k++;
+            }
+
+            while (j < right.Length)
+            {
+                arr[k] = right[j];
+                j++;
+                k++;
+            }
         }
 
         
