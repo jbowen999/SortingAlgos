@@ -2,7 +2,7 @@
 
 namespace SortingAlgos
 {
-    
+
     public class Program
     {
 
@@ -65,7 +65,7 @@ namespace SortingAlgos
         {
             // Overall worst case: O(n^2) == array is reverse sorted
             // Best case: O(n) == while loop never runs
-            for(int i = 1;i < arr.Length; i++) // O (n)
+            for (int i = 1; i < arr.Length; i++) // O (n)
             {
                 int temp = arr[i];// store the current element as it might be overwritten
                 int priorIndex = i - 1; // start comparing with element before the current element
@@ -78,7 +78,7 @@ namespace SortingAlgos
 
                 // need an assignment
                 arr[priorIndex + 1] = temp;
-            } 
+            }
         }
 
 
@@ -96,122 +96,184 @@ namespace SortingAlgos
                 leftSubArray[i] = arr[i];
             }
 
-            for (int i = mid;i < arr.Length; i++)
+            for (int i = mid; i < arr.Length; i++)
             {
                 rightSubArray[i - mid] = arr[i];
             }
-            Console.WriteLine("Before sorting left subarray:");
-            PrintArray(leftSubArray);
-            Console.WriteLine("Before sorting right subarray:");
-            PrintArray(rightSubArray);
+            //Console.WriteLine("Before sorting left subarray:");
+            //PrintArray(leftSubArray);
+            //Console.WriteLine();
+            //Console.WriteLine("Before sorting right subarray:");
+            //PrintArray(rightSubArray);
+            //Console.WriteLine();
 
             MergeSort(leftSubArray);
             MergeSort(rightSubArray);
-
             Merge(arr, leftSubArray, rightSubArray);
-            Console.WriteLine("After merging:");
-            PrintArray(arr);
+
+            //Console.WriteLine("After merging:");
+            //PrintArray(arr);
+            //Console.WriteLine();
         }
 
-        public static void Merge(int[] arr, int[] left, int[] right)
+        public static void Merge(int[] arr, int[] leftArr, int[] rightArr)
         {
-            int i = 0, j = 0, k = 0;
+            int leftIndex = 0, rightIndex = 0, arrIndex = 0;
 
-            while (i < left.Length && j < right.Length)
+            // While the leftArr has values and the right array has values
+            // Evaluate which value is lesser - and make assignments
+            while (leftIndex < leftArr.Length && rightIndex < rightArr.Length)
             {
-                if (left[i] <= right[j])
+                if (leftArr[leftIndex] <= rightArr[rightIndex])
                 {
-                    arr[k] = left[i];
-                    i++;
+                    arr[arrIndex++] = leftArr[leftIndex++];
                 }
                 else
                 {
-                    arr[k] = right[j];
-                    j++;
+                    arr[arrIndex++] = rightArr[rightIndex++];
                 }
-                k++;
             }
 
-            while (i < left.Length)
+            // copy remaining elemts from left array, if any
+            while (leftIndex < leftArr.Length)
             {
-                arr[k] = left[i];
-                i++;
-                k++;
+                arr[arrIndex++] = leftArr[leftIndex++];
             }
 
-            while (j < right.Length)
+            // copy remaining elemts from right array, if any
+            while (rightIndex < rightArr.Length)
             {
-                arr[k] = right[j];
-                j++;
-                k++;
+                arr[arrIndex++] = rightArr[rightIndex++];
             }
         }
 
-        
-
-
-        static void Main(string[] args)
+        /// <summary>
+        /// Utilizes a quick sort algo to sort the passed in array
+        /// </summary>
+        /// <param name="arr">The array to be sorted</param>
+        /// <param name="low">The smaller index of the (sub)array</param>
+        /// <param name="hi">The larger index of the (sub)array</param>
+        public static void QuickSort(int[] arr, int low, int hi)
         {
-            int[] arr1 = { 90, 3, 2, 56, 32, 34, 65, 68, 76, 1, 0, 100, 8 };
-            int[] arr1Sorted = { 0, 1, 2, 3, 8, 32, 34, 56, 65, 68, 76, 90, 100 };
+            if (low < hi)
+            {
+                // Partition return pivot location
+                int pivotIndex = Partition(arr, low, hi);
+
+                // Call quick sort again on new subarrays based on pivots position
+                QuickSort(arr, low, pivotIndex - 1);
+                QuickSort(arr, pivotIndex + 1, hi);
+            }
+        }
+
+        public static int Partition(int[] arr, int low, int hi)
+        {
+            int pivot = arr[hi]; // setting pivot to be the last value in the array
+            int i = low - 1;
+
+            for (int j = low; j < hi; j++)
+            {
+                if (arr[j] < pivot)
+                {
+                    i++;
+                    Swap(arr, i, j);
+                }
+            }
+
+            Swap(arr, ++i, hi);
+            return i;
+
+        }
+
+        public static void Swap(int[] arr, int i, int j)
+        {
+            int temp;
+            temp = arr[j];
+            arr[j] = arr[i];
+            arr[i] = temp;
+        }
+
+        public static void Race()
+        {
             int[] bigArr1 = { 6, 24, 68, 97, 14, 90, 43, 51, 30, 36, 73, 39, 82, 11, 2, 37, 54, 63, 18, 69, 31, 72, 87, 45, 46, 12, 71, 61, 59, 49, 13, 88, 53, 27, 99, 58, 75, 47, 25, 19, 1, 93, 84, 86, 35, 21, 55, 57, 48, 60, 95, 70, 76, 80, 28, 78, 40, 20, 42, 17, 66, 56, 74, 44, 7, 29, 22, 91, 15, 62, 23, 8, 79, 94, 77, 5, 65, 0, 34, 81, 10, 67, 9, 26, 83, 64, 41, 50, 98, 85, 33, 32, 3, 89, 4, 16, 96, 92, 52, 38 };
-            int[] bigArr1Sorted = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99 };
-            //PrintArray(arr1);
-            //BubbleSort(arr1);
-            //PrintArray(arr1);
-            Console.WriteLine("--------------------------------------------------");
-
-            int[] arr2 = { 90, 3, 2, 56, 32, 34, 65, 68, 76, 1, 0, 100, 8 };
-            int[] arr2Sorted = { 0, 1, 2, 3, 8, 32, 34, 56, 65, 68, 76, 90, 100 };
             int[] bigArr2 = { 6, 24, 68, 97, 14, 90, 43, 51, 30, 36, 73, 39, 82, 11, 2, 37, 54, 63, 18, 69, 31, 72, 87, 45, 46, 12, 71, 61, 59, 49, 13, 88, 53, 27, 99, 58, 75, 47, 25, 19, 1, 93, 84, 86, 35, 21, 55, 57, 48, 60, 95, 70, 76, 80, 28, 78, 40, 20, 42, 17, 66, 56, 74, 44, 7, 29, 22, 91, 15, 62, 23, 8, 79, 94, 77, 5, 65, 0, 34, 81, 10, 67, 9, 26, 83, 64, 41, 50, 98, 85, 33, 32, 3, 89, 4, 16, 96, 92, 52, 38 };
-            int[] bigArr2Sorted = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99 };
-
-            //PrintArray(arr2);
-            //SelectionSort(arr2);
-            //PrintArray(arr2);
-            Console.WriteLine("--------------------------------------------------");
-
-            int[] arr3 = { 90, 3, 2, 56, 32, 34, 65, 68, 76, 1, 0, 100, 8 };
-            int[] arr3Sorted = { 0, 1, 2, 3, 8, 32, 34, 56, 65, 68, 76, 90, 100 };
             int[] bigArr3 = { 6, 24, 68, 97, 14, 90, 43, 51, 30, 36, 73, 39, 82, 11, 2, 37, 54, 63, 18, 69, 31, 72, 87, 45, 46, 12, 71, 61, 59, 49, 13, 88, 53, 27, 99, 58, 75, 47, 25, 19, 1, 93, 84, 86, 35, 21, 55, 57, 48, 60, 95, 70, 76, 80, 28, 78, 40, 20, 42, 17, 66, 56, 74, 44, 7, 29, 22, 91, 15, 62, 23, 8, 79, 94, 77, 5, 65, 0, 34, 81, 10, 67, 9, 26, 83, 64, 41, 50, 98, 85, 33, 32, 3, 89, 4, 16, 96, 92, 52, 38 };
-            int[] bigArr3Sorted = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99 };
-
-            //PrintArray(arr3);
-            //InsertionSort(arr3);
-            //PrintArray(arr3);
-            Console.WriteLine("--------------------------------------------------");
-
-            int[] arr4 = { 90, 3, 2, 56, 32, 34, 65, 68, 76, 1, 0, 100, 8 };
-            int[] arr4Sorted = { 0, 1, 2, 3, 8, 32, 34, 56, 65, 68, 76, 90, 100 };
             int[] bigArr4 = { 6, 24, 68, 97, 14, 90, 43, 51, 30, 36, 73, 39, 82, 11, 2, 37, 54, 63, 18, 69, 31, 72, 87, 45, 46, 12, 71, 61, 59, 49, 13, 88, 53, 27, 99, 58, 75, 47, 25, 19, 1, 93, 84, 86, 35, 21, 55, 57, 48, 60, 95, 70, 76, 80, 28, 78, 40, 20, 42, 17, 66, 56, 74, 44, 7, 29, 22, 91, 15, 62, 23, 8, 79, 94, 77, 5, 65, 0, 34, 81, 10, 67, 9, 26, 83, 64, 41, 50, 98, 85, 33, 32, 3, 89, 4, 16, 96, 92, 52, 38 };
-            int[] bigArr4Sorted = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99 };
+            int[] bigArr5 = { 6, 24, 68, 97, 14, 90, 43, 51, 30, 36, 73, 39, 82, 11, 2, 37, 54, 63, 18, 69, 31, 72, 87, 45, 46, 12, 71, 61, 59, 49, 13, 88, 53, 27, 99, 58, 75, 47, 25, 19, 1, 93, 84, 86, 35, 21, 55, 57, 48, 60, 95, 70, 76, 80, 28, 78, 40, 20, 42, 17, 66, 56, 74, 44, 7, 29, 22, 91, 15, 62, 23, 8, 79, 94, 77, 5, 65, 0, 34, 81, 10, 67, 9, 26, 83, 64, 41, 50, 98, 85, 33, 32, 3, 89, 4, 16, 96, 92, 52, 38 };
 
-            PrintArray(arr4);
-            MergeSort(arr4);
-            PrintArray(arr4);
-            Console.WriteLine("--------------------------------------------------");
 
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
-            InsertionSort(bigArr1Sorted);
+            InsertionSort(bigArr1);
             stopwatch.Stop();
             Console.WriteLine($"Elapsed time for Insertion sort: {stopwatch.ElapsedTicks}");
 
             stopwatch.Restart();
             stopwatch.Start();
-            BubbleSort(bigArr2Sorted);
+            BubbleSort(bigArr2);
             stopwatch.Stop();
             Console.WriteLine($"Elapsed time for Bubble sort: {stopwatch.ElapsedTicks}");
 
             stopwatch.Restart();
             stopwatch.Start();
-            SelectionSort(bigArr3Sorted);
+            SelectionSort(bigArr3);
             stopwatch.Stop();
             Console.WriteLine($"Elapsed time for Selection sort: {stopwatch.ElapsedTicks}");
 
+            stopwatch.Restart();
+            stopwatch.Start();
+            MergeSort(bigArr4);
+            stopwatch.Stop();
+            Console.WriteLine($"Elapsed time for Merge sort: {stopwatch.ElapsedTicks}");
 
+            stopwatch.Restart();
+            stopwatch.Start();
+            QuickSort(bigArr5, 0, bigArr5.Length - 1);
+            stopwatch.Stop();
+            Console.WriteLine($"Elapsed time for Quick sort: {stopwatch.ElapsedTicks}");
         }
 
+
+        static void Main(string[] args)
+        {
+            int[] arr1 = { 90, 3, 2, 56, 32, 34, 65, 68, 76, 1, 0, 100, 8 };
+            //PrintArray(arr1);
+            //BubbleSort(arr1);
+            //PrintArray(arr1);
+            //Console.WriteLine("--------------------------------------------------");
+
+            int[] arr2 = { 90, 3, 2, 56, 32, 34, 65, 68, 76, 1, 0, 100, 8 };
+
+            //PrintArray(arr2);
+            //SelectionSort(arr2);
+            //PrintArray(arr2);
+            //Console.WriteLine("--------------------------------------------------");
+
+            int[] arr3 = { 90, 3, 2, 56, 32, 34, 65, 68, 76, 1, 0, 100, 8 };
+
+            //PrintArray(arr3);
+            //InsertionSort(arr3);
+            //PrintArray(arr3);
+            //Console.WriteLine("--------------------------------------------------");
+
+            int[] arr4 = { 90, 3, 2, 56, 32, 34, 65, 68, 76, 1, 0, 100, 8 };
+
+            //PrintArray(arr4);
+            //MergeSort(arr4);
+            //PrintArray(arr4);
+            //Console.WriteLine("--------------------------------------------------");
+
+            int[] arr5 = { 90, 3, 2, 56, 32, 34, 65, 68, 76, 1, 0, 100, 8 };
+
+            //PrintArray(arr5);
+            //QuickSort(arr5, 0, arr5.Length - 1);
+            //PrintArray(arr5);
+            //Console.WriteLine("--------------------------------------------------");
+
+
+            Race();
+
+        }
 
 
 
